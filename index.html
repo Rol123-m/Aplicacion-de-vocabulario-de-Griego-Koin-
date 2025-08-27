@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vocabulary App</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#4a90e2" />
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --accent-color: #00b894;
+      --bg-color: #ecf0f1;
+      --white: #ffffff;
+      --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: var(--bg-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: var(--white);
+      padding: 30px 20px;
+      border-radius: 12px;
+      box-shadow: var(--shadow);
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 1.4rem;
+      color: var(--primary-color);
+      margin-bottom: 20px;
+    }
+
+    select, button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      border: none;
+      box-shadow: var(--shadow);
+    }
+
+    select {
+      background-color: var(--white);
+      color: #333;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: var(--accent-color);
+      color: var(--white);
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #019875;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>Selecciona la semana de vocabulario a repasar</h1>
+    <select id="lista_de_vocabulario">
+      <option value="">-- Elige una semana --</option>
+      <option value="1. vocabulario1.html">Semana 1</option>
+      <option value="2. Vocabulario semana 2.html">Semana 2</option>
+      <option value="3. vocabulario3.html">Semana 3</option>
+      <option value="4. vocabulario4.html">Semana 4</option>
+      <option value="5. vocabulario5.html">Semana 5</option>
+      <option value="6. vocabulario6.html">Semana 6</option>
+      <option value="7. vocabulario7.html">Semana 7</option>
+      <option value="8. vocabulario8.html">Semana 8</option>
+      <option value="9. Vocabulario9.html">Semana 9</option>
+      <option value="10. Vocabulario10.html">Semana 10</option>
+      <option value="11. Vocabulario11.html">Semana 11</option>
+      <option value="12. Vocabulario12.html">Semana 12</option>
+      <option value="13. vocabulario semana13.html">Semana 13</option>
+      <option value="14. vocabulario semana14.html">Semana 14</option>
+      <option value="verbos.html">Lista de verbos</option>
+      <option value="sustantivos.html">Lista de verbos</option>
+    </select>
+    <button onclick="redirigir()">Acceder a recursos</button>
+  </div>
+
+  <script>
+    function redirigir() {
+      const semana = document.getElementById('lista_de_vocabulario').value;
+      if (semana) {
+        window.location.href = semana;
+      } else {
+        alert("Por favor selecciona una semana");
+      }
+    }
+
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+        .then(() => console.log('Service Worker registrado'))
+        .catch(error => console.error('Error al registrar el Service Worker:', error));
+    }
+  </script>
+</body>
+</html>
