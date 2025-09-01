@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
@@ -16,61 +16,130 @@
     }
 
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: var(--bg-color);
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      background: linear-gradient(135deg, #4a90e2 0%, #00b894 100%);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
       padding: 20px;
+      margin: 0;
     }
 
     .card {
       background-color: var(--white);
-      padding: 30px 20px;
-      border-radius: 12px;
+      padding: 40px 30px;
+      border-radius: 16px;
       box-shadow: var(--shadow);
-      max-width: 400px;
+      max-width: 450px;
       width: 100%;
       text-align: center;
+      position: relative;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
     }
 
     h1 {
-      font-size: 1.4rem;
+      font-size: 1.6rem;
       color: var(--primary-color);
-      margin-bottom: 20px;
+      margin-bottom: 25px;
+      font-weight: 600;
     }
 
     select, button {
       width: 100%;
-      padding: 12px;
+      padding: 14px;
       font-size: 1rem;
-      border-radius: 8px;
+      border-radius: 10px;
       margin-bottom: 20px;
       border: none;
       box-shadow: var(--shadow);
+      transition: all 0.3s ease;
     }
 
     select {
       background-color: var(--white);
       color: #333;
-      border: 1px solid #ccc;
+      border: 2px solid #e0e0e0;
+      cursor: pointer;
+    }
+
+    select:focus {
+      border-color: var(--primary-color);
+      outline: none;
     }
 
     button {
       background-color: var(--accent-color);
       color: var(--white);
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      font-weight: 600;
+      letter-spacing: 0.5px;
     }
 
     button:hover {
       background-color: #019875;
+      transform: translateY(-2px);
+    }
+    
+    #installButton {
+      display: none;
+      background-color: var(--primary-color);
+      position: absolute;
+      top: -15px;
+      right: -15px;
+      width: auto;
+      padding: 10px 20px;
+      font-size: 0.9rem;
+      border-radius: 25px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      animation: pulse 2s infinite;
+    }
+    
+    #installButton:hover {
+      background-color: #3a7bc8;
+      transform: scale(1.05);
+    }
+    
+    .install-icon {
+      margin-right: 8px;
+    }
+    
+    @keyframes pulse {
+      0% {
+        box-shadow: 0 0 0 0 rgba(74, 144, 226, 0.7);
+      }
+      70% {
+        box-shadow: 0 0 0 10px rgba(74, 144, 226, 0);
+      }
+      100% {
+        box-shadow: 0 0 0 0 rgba(74, 144, 226, 0);
+      }
+    }
+    
+    .logo {
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      color: var(--primary-color);
+    }
+    
+    .footer {
+      margin-top: 25px;
+      color: #777;
+      font-size: 0.85rem;
     }
   </style>
 </head>
 <body>
   <div class="card">
+    <button id="installButton">
+      <span class="install-icon">📲</span> Instalar App
+    </button>
+    
+    <div class="logo">📚</div>
     <h1>Selecciona la semana de vocabulario a repasar</h1>
     <select id="lista_de_vocabulario">
       <option value="">-- Elige una semana --</option>
@@ -92,6 +161,10 @@
       <option value="sustantivos.html">Lista de sustantivos</option>
     </select>
     <button onclick="redirigir()">Acceder a recursos</button>
+    
+    <div class="footer">
+      Vocabulary App - Aprende inglés fácilmente
+    </div>
   </div>
 
   <script>
@@ -109,7 +182,41 @@
         .then(() => console.log('Service Worker registrado'))
         .catch(error => console.error('Error al registrar el Service Worker:', error));
     }
+    
+    // Gestión del botón de instalación
+    let deferredPrompt;
+    const installButton = document.getElementById('installButton');
+    
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevenir que el navegador muestre el prompt automáticamente
+      e.preventDefault();
+      // Guardar el evento para poder activarlo más tarde
+      deferredPrompt = e;
+      // Mostrar el botón de instalación
+      installButton.style.display = 'block';
+      
+      installButton.addEventListener('click', () => {
+        // Ocultar nuestro botón de instalación
+        installButton.style.display = 'none';
+        // Mostrar el prompt de instalación
+        deferredPrompt.prompt();
+        // Esperar a que el usuario responda al prompt
+        deferredPrompt.userChoice.then((choiceResult) => {
+          if (choiceResult.outcome === 'accepted') {
+            console.log('Usuario aceptó la instalación');
+          } else {
+            console.log('Usuario rechazó la instalación');
+          }
+          deferredPrompt = null;
+        });
+      });
+    });
+    
+    window.addEventListener('appinstalled', () => {
+      // Ocultar el botón de instalación después de que la app se instale
+      installButton.style.display = 'none';
+      console.log('App instalada correctamente');
+    });
   </script>
 </body>
-
 </html>
