@@ -1,0 +1,487 @@
+ <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprendizaje de Griego</title>
+    <style>
+        /* Variables globales para mantener consistencia */
+:root {
+    --primary-color: #4a6fa5;
+    --secondary-color: #5cb85c;
+    --accent-color: #ff6b6b;
+    --text-color: #333;
+    --light-gray: #f4f4f4;
+    --white: #ffffff;
+    --shadow: 0 4px 8px rgba(0,0,0,0.1);
+    --border-radius: 8px;
+    --transition: all 0.3s ease;
+}
+
+/* Reset y estilos base */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--light-gray);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 1rem;
+}
+
+/* Encabezado */
+h1 {
+    color: var(--primary-color);
+    text-align: center;
+    margin: 1rem 0;
+    font-size: 1.8rem;
+}
+
+/* Contenedor principal */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+/* Flashcards */
+.flashcard-container {
+    perspective: 1000px;
+    width: 100%;
+    max-width: 400px;
+    height: 250px;
+    margin: 1.5rem 0;
+}
+
+.flashcard {
+    width: 100%;
+    height: 100%;
+    font-size: 1.8rem;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.6s;
+    cursor: pointer;
+}
+
+.flashcard.flipped {
+    transform: rotateY(180deg);
+}
+
+.flashcard-front, .flashcard-back {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    backface-visibility: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    background-color: var(--white);
+    padding: 1.5rem;
+    text-align: center;
+    transition: var(--transition);
+}
+
+.flashcard-back {
+    transform: rotateY(180deg);
+}
+
+/* Navegación */
+.navigation {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 1.5rem;
+    gap: 1rem;
+}
+
+.navigation button {
+    background-color: var(--secondary-color);
+    color: var(--white);
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    flex: 1;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.navigation button:hover:not(:disabled) {
+    background-color: #4cae4c;
+    transform: translateY(-2px);
+}
+
+.navigation button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Quiz */
+.quiz {
+    background-color: var(--white);
+    border: 1px solid #ddd;
+    padding: 1.5rem;
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.quiz input[type="text"] {
+    width: 100%;
+    padding: 0.8rem;
+    margin-top: 1rem;
+    border-radius: var(--border-radius);
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+.quiz button {
+    background-color: var(--secondary-color);
+    color: var(--white);
+    padding: 0.8rem 1.2rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    margin-top: 1rem;
+    width: 100%;
+    font-size: 1rem;
+    transition: var(--transition);
+}
+
+.quiz button:hover {
+    background-color: #4cae4c;
+}
+
+.result {
+    margin-top: 1.5rem;
+    padding: 0.8rem;
+    border-radius: var(--border-radius);
+}
+
+.correct {
+    background-color: #dff0d8;
+    color: #3c763d;
+}
+
+.incorrect {
+    background-color: #f2dede;
+    color: #a94442;
+}
+
+.hidden {
+    display: none;
+}
+
+/* Botón de comenzar examen */
+#start-quiz-btn {
+    background-color: var(--accent-color);
+    color: var(--white);
+    padding: 1rem 1.5rem;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    margin: 1rem 0;
+    font-size: 1.1rem;
+    transition: var(--transition);
+}
+
+#start-quiz-btn:hover {
+    background-color: #e05a5a;
+    transform: translateY(-2px);
+}
+
+/* Footer */
+footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    background-color: var(--white);
+    padding: 1.5rem;
+    margin-top: auto;
+}
+
+footer img {
+    width: 120px;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+#foot {
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* Media Queries para Responsive Design */
+
+/* Tablets */
+/*@media (max-width: 768px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+    
+    .flashcard-container {
+        height: 220px;
+        max-width: 350px;
+    }
+    
+    .flashcard {
+        font-size: 1.6rem;
+    }
+    
+    .navigation, .quiz {
+        max-width: 350px;
+    }
+}
+
+/* Móviles */
+
+/*@media (max-width: 480px) {
+    body {
+        padding: 0.5rem;
+    }
+    
+    h1 {
+        font-size: 1.4rem;
+        margin: 0.8rem 0;
+    }
+    
+    .flashcard-container {
+        height: 200px;
+        margin: 1rem 0;
+    }
+    
+    .flashcard {
+        font-size: 1.4rem;
+    }
+    
+    .flashcard-front, .flashcard-back {
+        padding: 1rem;
+    }
+    
+    .navigation {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .navigation button {
+        padding: 0.7rem;
+    }
+    
+    .quiz {
+        padding: 1rem;
+    }
+    
+    footer {
+        padding: 1rem;
+    }
+    
+    footer img {
+        width: 100px;
+    }
+    
+    #foot {
+        font-size: 0.8rem;
+    }
+}
+
+/* Dispositivos muy pequeños */
+/*@media (max-width: 320px) {
+    .flashcard-container {
+        height: 180px;
+    }
+    
+    .flashcard {
+        font-size: 1.2rem;
+    }
+}*/
+    </style>
+</head>
+<body>
+
+<h1>Flashcards de Griego a Español</h1>
+
+<div id="flashcard-section">
+    <div class="flashcard-container">
+        <div class="flashcard" onclick="flipCard()">
+            <div class="flashcard-front" id="front">
+                <p id="greek-word"></p>
+            </div>
+            <div class="flashcard-back" id="back">
+                <p id="spanish-word"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button onclick="prevCard()" id="prev-btn" disabled>Anterior</button>
+        <button onclick="nextCard()" id="next-btn">Siguiente</button>
+    </div>
+</div>
+
+<div class="quiz hidden" id="quiz-section">
+    <p>Traduce la siguiente palabra del griego al español:</p>
+    <p id="quiz-question"></p>
+    <input type="text" id="quiz-answer" placeholder="Escribe tu respuesta aquí">
+    <button onclick="checkQuizAnswer()">Comprobar</button>
+    <div id="quiz-result" class="result"></div>
+    <button onclick="nextQuizQuestion()" class="hidden" id="next-quiz-btn">Siguiente Pregunta</button>
+</div>
+
+<button onclick="startQuiz()" class="hidden" id="start-quiz-btn">Comenzar Examen</button>
+<footer>
+    <img src="https://i.postimg.cc/wMJ2bCgV/mas-logos.jpg" alt="">
+   <p id="foot"> @Copyright Sección Educativa del Ministerio: "Vivos para Servir"</p>
+</footer>
+<script>
+    
+    const vocabulary = [
+  {
+    "greek": "ἄγω",
+    "spanish": "Yo conduzco, llevo, arresto"
+  },
+  {
+    "greek": "αἷμα, -ατος, τό",
+    "spanish": "sangre"
+  },
+  {
+    "greek": "ἕκαστος, -η, -ον",
+    "spanish": "cada, cada uno"
+  },
+  {
+   "greek": "ἱμάτιον, -ου, τό",
+   "spanish": "prenda de vestir, manto"
+  },
+  {
+    "greek": "ὄρος, -ους, τό",
+    "spanish": "montaña, monte"
+  },
+  {
+    "greek": "ὑπάγω",
+    "spanish": "Yo me voy, parto"
+  },
+  {
+    "greek": "φοβέομαι",
+    "spanish": "Yo temo, me awe"
+  },
+  {
+    "greek": "χαίρω",
+    "spanish": "Yo me alegro, regocijo"
+  }
+];
+
+    let currentCardIndex = 0;
+    let quizIndex = 0;
+    let quizScore = 0;
+
+    function normalizeText(text) {
+        return text
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos y diacríticos
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, ' '); // Normalizar espacios
+    }
+
+    function updateCard() {
+        document.getElementById('greek-word').textContent = vocabulary[currentCardIndex].greek;
+        document.getElementById('spanish-word').textContent = vocabulary[currentCardIndex].spanish;
+        document.getElementById('prev-btn').disabled = currentCardIndex === 0;
+        document.getElementById('next-btn').disabled = currentCardIndex === vocabulary.length - 1;
+        if (currentCardIndex === vocabulary.length - 1) {
+            document.getElementById('start-quiz-btn').classList.remove('hidden');
+        } else {
+            document.getElementById('start-quiz-btn').classList.add('hidden');
+        }
+    }
+
+    function flipCard() {
+        document.querySelector('.flashcard').classList.toggle('flipped');
+    }
+
+    function prevCard() {
+        if (currentCardIndex > 0) {
+            currentCardIndex--;
+            updateCard();
+        }
+    }
+
+    function nextCard() {
+        if (currentCardIndex < vocabulary.length - 1) {
+            currentCardIndex++;
+            updateCard();
+        }
+    }
+
+    function startQuiz() {
+        document.getElementById('flashcard-section').classList.add('hidden');
+        document.getElementById('quiz-section').classList.remove('hidden');
+        document.getElementById('start-quiz-btn').classList.add('hidden');
+        quizIndex = 0;
+        quizScore = 0;
+        nextQuizQuestion();
+    }
+
+    function nextQuizQuestion() {
+        if (quizIndex < vocabulary.length) {
+            document.getElementById('quiz-question').textContent = vocabulary[quizIndex].greek;
+            document.getElementById('quiz-answer').value = '';
+            document.getElementById('quiz-result').textContent = '';
+            document.getElementById('next-quiz-btn').classList.add('hidden');
+        } else {
+            document.getElementById('quiz-section').classList.add('hidden');
+            alert(`Examen terminado. Puntuación: ${quizScore} de ${vocabulary.length}`);
+        }
+    }
+
+    function checkQuizAnswer() {
+        const userInput = document.getElementById('quiz-answer').value;
+        const userAnswers = userInput.split(',').map(answer => normalizeText(answer));
+        const correctAnswers = vocabulary[quizIndex].spanish.split(',').map(answer => normalizeText(answer));
+        const resultDiv = document.getElementById('quiz-result');
+
+        // Verificar si al menos una respuesta coincide
+        const isCorrect = userAnswers.some(userAnswer => 
+            correctAnswers.includes(userAnswer)
+        );
+
+        if (isCorrect) {
+            resultDiv.textContent = '¡Correcto!';
+            resultDiv.className = 'result correct';
+            quizScore++;
+        } else {
+            resultDiv.textContent = `Incorrecto. Las respuestas correctas son: ${vocabulary[quizIndex].spanish}`;
+            resultDiv.className = 'result incorrect';
+        }
+        document.getElementById('next-quiz-btn').classList.remove('hidden');
+        quizIndex++;
+    }
+
+    window.onload = updateCard;
+</script>
+</body>
+</html>
