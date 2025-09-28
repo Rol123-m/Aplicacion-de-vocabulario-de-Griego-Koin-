@@ -1,0 +1,206 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprendizaje de Griego</title>
+    <link rel="stylesheet" href="vocabulary_styles.css"
+</head>
+<body>
+
+<h1>Flashcards de Griego a Español</h1>
+
+<div id="flashcard-section">
+    <div class="flashcard-container">
+        <div class="flashcard" onclick="flipCard()">
+            <div class="flashcard-front" id="front">
+                <p id="greek-word"></p>
+            </div>
+            <div class="flashcard-back" id="back">
+                <p id="spanish-word"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button onclick="prevCard()" id="prev-btn" disabled>Anterior</button>
+        <button onclick="nextCard()" id="next-btn">Siguiente</button>
+    </div>
+</div>
+
+<div class="quiz hidden" id="quiz-section">
+    <p>Traduce la siguiente palabra del griego al español:</p>
+    <p id="quiz-question"></p>
+    <input type="text" id="quiz-answer" placeholder="Escribe tu respuesta aquí">
+    <button onclick="checkQuizAnswer()">Comprobar</button>
+    <div id="quiz-result" class="result"></div>
+    <button onclick="nextQuizQuestion()" class="hidden" id="next-quiz-btn">Siguiente Pregunta</button>
+</div>
+
+<button onclick="startQuiz()" class="hidden" id="start-quiz-btn">Comenzar Examen</button>
+<footer>
+    <img src="https://i.postimg.cc/wMJ2bCgV/mas-logos.jpg" alt="">
+   <p id="foot"> @Copyright Sección Educativa del Ministerio: "Vivos para Servir"</p>
+</footer>
+<script>
+    
+    const vocabulary = [
+  {
+    "greek": "διδάσκω",
+    "spanish": "enseñar, enseño"
+  },
+  {
+    "greek": "διδάσκων",
+    "spanish": "enseñando  "
+  },
+  {
+    "greek": "πορεύομαι",
+    "spanish": "ir, caminar"
+  },
+  {
+    "greek": "πορευθείς,πορευόμενος",
+    "spanish": "habiendo ido"
+  },
+  {
+    "greek": "ἀκούω",
+    "spanish": "oír"
+  },
+  {
+    "greek": "ἀκούων",
+    "spanish": "oyendo"
+  },
+  {
+    "greek": "γράφω",
+    "spanish": "escribir, escribo"
+  },
+  {
+    "greek": "γράψας",
+    "spanish": "habiendo escrito"
+  },
+  {
+    "greek": "λέγω",
+    "spanish": "decir, digo"
+  },
+  {
+    "greek": "εἰπών",
+    "spanish": "habiendo dicho"
+  },
+  {
+    "greek": "βλέπω",
+    "spanish": " ver, veo"
+  },
+  {
+    "greek": "βλέπων",
+    "spanish": "viendo"
+  },
+  {
+    "greek": "λαμβάνω",
+    "spanish": "tomar, recibir"
+  },
+  {
+    "greek": "λαβών",
+    "spanish": "habiendo tomado"
+  },
+  {
+    "greek": "πιστεύω",
+    "spanish": " creer"
+  },
+  {
+    "greek": "πιστεύων ",
+    "spanish": "creyendo"
+  }
+];
+
+    let currentCardIndex = 0;
+    let quizIndex = 0;
+    let quizScore = 0;
+
+    function normalizeText(text) {
+        return text
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos y diacríticos
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, ' '); // Normalizar espacios
+    }
+
+    function updateCard() {
+        document.getElementById('greek-word').textContent = vocabulary[currentCardIndex].greek;
+        document.getElementById('spanish-word').textContent = vocabulary[currentCardIndex].spanish;
+        document.getElementById('prev-btn').disabled = currentCardIndex === 0;
+        document.getElementById('next-btn').disabled = currentCardIndex === vocabulary.length - 1;
+        if (currentCardIndex === vocabulary.length - 1) {
+            document.getElementById('start-quiz-btn').classList.remove('hidden');
+        } else {
+            document.getElementById('start-quiz-btn').classList.add('hidden');
+        }
+    }
+
+    function flipCard() {
+        document.querySelector('.flashcard').classList.toggle('flipped');
+    }
+
+    function prevCard() {
+        if (currentCardIndex > 0) {
+            currentCardIndex--;
+            updateCard();
+        }
+    }
+
+    function nextCard() {
+        if (currentCardIndex < vocabulary.length - 1) {
+            currentCardIndex++;
+            updateCard();
+        }
+    }
+
+    function startQuiz() {
+        document.getElementById('flashcard-section').classList.add('hidden');
+        document.getElementById('quiz-section').classList.remove('hidden');
+        document.getElementById('start-quiz-btn').classList.add('hidden');
+        quizIndex = 0;
+        quizScore = 0;
+        nextQuizQuestion();
+    }
+
+    function nextQuizQuestion() {
+        if (quizIndex < vocabulary.length) {
+            document.getElementById('quiz-question').textContent = vocabulary[quizIndex].greek;
+            document.getElementById('quiz-answer').value = '';
+            document.getElementById('quiz-result').textContent = '';
+            document.getElementById('next-quiz-btn').classList.add('hidden');
+        } else {
+            document.getElementById('quiz-section').classList.add('hidden');
+            alert(`Examen terminado. Puntuación: ${quizScore} de ${vocabulary.length}`);
+        }
+    }
+
+    function checkQuizAnswer() {
+        const userInput = document.getElementById('quiz-answer').value;
+        const userAnswers = userInput.split(',').map(answer => normalizeText(answer));
+        const correctAnswers = vocabulary[quizIndex].spanish.split(',').map(answer => normalizeText(answer));
+        const resultDiv = document.getElementById('quiz-result');
+
+        // Verificar si al menos una respuesta coincide
+        const isCorrect = userAnswers.some(userAnswer => 
+            correctAnswers.includes(userAnswer)
+        );
+
+        if (isCorrect) {
+            resultDiv.textContent = '¡Correcto!';
+            resultDiv.className = 'result correct';
+            quizScore++;
+        } else {
+            resultDiv.textContent = `Incorrecto. Las respuestas correctas son: ${vocabulary[quizIndex].spanish}`;
+            resultDiv.className = 'result incorrect';
+        }
+        document.getElementById('next-quiz-btn').classList.remove('hidden');
+        quizIndex++;
+    }
+
+    window.onload = updateCard;
+</script>
+</body>
+</html>
+
