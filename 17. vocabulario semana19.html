@@ -1,0 +1,387 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprendizaje de Griego</title>
+    <link rel="stylesheet" href="vocabulary_styles.css">
+ <!--  <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #333;
+        }
+        .flashcard-container {
+            perspective: 1000px;
+            width: 300px;
+            height: 200px;
+            margin-bottom: 60px;
+            margin-top: 50px;
+        }
+        .flashcard {
+            width: 100%;
+            height: 100%;
+            font-size: 28px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+        }
+        .flashcard.flipped {
+            transform: rotateY(180deg);
+        }
+        .flashcard-front, .flashcard-back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            background-color: #fff;
+            padding: 20px;
+            text-align: center;
+        }
+        .flashcard-back {
+            transform: rotateY(180deg);
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            width: 300px;
+            margin-bottom: 20px;
+        }
+        .navigation button {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .navigation button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        .quiz {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .quiz input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .quiz button {
+            background-color: #5cb85c;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .quiz button:hover {
+            background-color: #4cae4c;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .correct {
+            background-color: #dff0d8;
+            color: #3c763d;
+        }
+        .incorrect {
+            background-color: #f2dede;
+            color: #a94442;
+        }
+        .hidden {
+            display: none;
+        }
+        footer {
+            display: flex;
+            width: 100%;
+            background-color: #ffffff;
+            padding: 50px;
+            padding-bottom: 20px;
+            margin-top: auto; /* Esto asegura que el footer se pegue al final */
+        }
+        img {
+            width: 120px;
+            height: 90px;
+            padding-left: 40px;
+        }
+        #foot {
+            text-align: center;
+            margin-left: 350px;
+            font-size: 16px;
+        }
+    </style>-->
+</head>
+<body>
+
+<h1>Flashcards de Griego a Español</h1>
+
+<div id="flashcard-section">
+    <div class="flashcard-container">
+        <div class="flashcard" onclick="flipCard()">
+            <div class="flashcard-front" id="front">
+                <p id="greek-word"></p>
+            </div>
+            <div class="flashcard-back" id="back">
+                <p id="spanish-word"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button onclick="prevCard()" id="prev-btn" disabled>Anterior</button>
+        <button onclick="nextCard()" id="next-btn">Siguiente</button>
+    </div>
+</div>
+
+<div class="quiz hidden" id="quiz-section">
+    <p>Traduce la siguiente palabra del griego al español:</p>
+    <p id="quiz-question"></p>
+    <input type="text" id="quiz-answer" placeholder="Escribe tu respuesta aquí">
+    <button onclick="checkQuizAnswer()">Comprobar</button>
+    <div id="quiz-result" class="result"></div>
+    <button onclick="nextQuizQuestion()" class="hidden" id="next-quiz-btn">Siguiente Pregunta</button>
+</div>
+
+<button onclick="startQuiz()" class="hidden" id="start-quiz-btn">Comenzar Examen</button>
+<footer>
+    <img src="https://i.postimg.cc/wMJ2bCgV/mas-logos.jpg" alt="">
+   <p id="foot"> @Copyright Sección Educativa del Ministerio: "Vivos para Servir"</p>
+</footer>
+<script>
+    
+    const vocabulary = [
+  {
+    "greek": "τελέω",
+    "spanish": "completar, llevar a cabo, cumplir"
+  },
+  {
+    "greek": "Τετέλεσται",
+    "spanish": "Ha sido consumado, Ha sido completado"
+  },
+  {
+    "greek": "γράφω",
+    "spanish": "escribir, escribo"
+  },
+  {
+    "greek": "Γέγραπται",
+    "spanish": "Ha sido escrito (y permanece escrito)"
+  },
+  {
+    "greek": "λύω",
+    "spanish": "soltar, desatar"
+  },
+  {
+    "greek": "λέλυκα",
+    "spanish": "he soltado (y permanece suelto)"
+  },
+  {
+    "greek": "λέλυμαι",
+    "spanish": "he sido soltado (y estoy suelto)"
+  },
+  {
+    "greek": "ἀγαπάω",
+    "spanish": "amar"
+  },
+  {
+    "greek": "ἠγάπηκα",
+    "spanish": "he amado"
+  },
+  {
+    "greek": "γίνομαι",
+    "spanish": "llegar a ser, suceder"
+  },
+  {
+    "greek": "γέγονα",
+    "spanish": "he llegado a ser"
+  },
+  {
+    "greek": "ἔρχομαι",
+    "spanish": "venir, ir"
+  },
+  {
+    "greek": "ἐλήλυθα",
+    "spanish": "he venido"
+  },
+  {
+    "greek": "ὁράω",
+    "spanish": "ver"
+  },
+  {
+    "greek": "ἑώρακα",
+    "spanish": "he visto (y conservo el conocimiento)"
+  },
+  {
+    "greek": "λείπω",
+    "spanish": "dejar, abandonar"
+  },
+  {
+    "greek": "λέλοιπα",
+    "spanish": "he dejado"
+  },
+  {
+    "greek": "πίπτω",
+    "spanish": "caer"
+  },
+  {
+    "greek": "πέπτωκα",
+    "spanish": "he caído"
+  },
+  {
+    "greek": "λαμβάνω",
+    "spanish": "tomar, recibir"
+  },
+  {
+    "greek": "εἴληφα",
+    "spanish": "he tomado, he recibido"
+  },
+  {
+    "greek": "ἀκούω",
+    "spanish": "oír, escuchar"
+  },
+  {
+    "greek": "ἀκήκοα",
+    "spanish": "he oído, he escuchado"
+  },
+  {
+    "greek": "ποιέω",
+    "spanish": "hacer"
+  },
+  {
+    "greek": "πεποίηκα",
+    "spanish": "he hecho"
+  },
+  {
+    "greek": "πίστις",
+    "spanish": "fe, confianza"
+  },
+  {
+    "greek": "σώζω",
+    "spanish": "salvar, sanar"
+  },
+  {
+    "greek": "σέσωκα",
+    "spanish": "he salvado (y permanece salvado)"
+  }
+]
+
+    let currentCardIndex = 0;
+    let quizIndex = 0;
+    let quizScore = 0;
+
+    function normalizeText(text) {
+        return text
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '') // Eliminar acentos y diacríticos
+            .toLowerCase()
+            .trim()
+            .replace(/\s+/g, ' '); // Normalizar espacios
+    }
+
+    function updateCard() {
+        document.getElementById('greek-word').textContent = vocabulary[currentCardIndex].greek;
+        document.getElementById('spanish-word').textContent = vocabulary[currentCardIndex].spanish;
+        document.getElementById('prev-btn').disabled = currentCardIndex === 0;
+        document.getElementById('next-btn').disabled = currentCardIndex === vocabulary.length - 1;
+        if (currentCardIndex === vocabulary.length - 1) {
+            document.getElementById('start-quiz-btn').classList.remove('hidden');
+        } else {
+            document.getElementById('start-quiz-btn').classList.add('hidden');
+        }
+    }
+
+    function flipCard() {
+        document.querySelector('.flashcard').classList.toggle('flipped');
+    }
+
+    function prevCard() {
+        if (currentCardIndex > 0) {
+            currentCardIndex--;
+            updateCard();
+        }
+    }
+
+    function nextCard() {
+        if (currentCardIndex < vocabulary.length - 1) {
+            currentCardIndex++;
+            updateCard();
+        }
+    }
+
+    function startQuiz() {
+        document.getElementById('flashcard-section').classList.add('hidden');
+        document.getElementById('quiz-section').classList.remove('hidden');
+        document.getElementById('start-quiz-btn').classList.add('hidden');
+        quizIndex = 0;
+        quizScore = 0;
+        nextQuizQuestion();
+    }
+
+    function nextQuizQuestion() {
+        if (quizIndex < vocabulary.length) {
+            document.getElementById('quiz-question').textContent = vocabulary[quizIndex].greek;
+            document.getElementById('quiz-answer').value = '';
+            document.getElementById('quiz-result').textContent = '';
+            document.getElementById('next-quiz-btn').classList.add('hidden');
+        } else {
+            document.getElementById('quiz-section').classList.add('hidden');
+            alert(`Examen terminado. Puntuación: ${quizScore} de ${vocabulary.length}`);
+        }
+    }
+
+    function checkQuizAnswer() {
+        const userInput = document.getElementById('quiz-answer').value;
+        const userAnswers = userInput.split(',').map(answer => normalizeText(answer));
+        const correctAnswers = vocabulary[quizIndex].spanish.split(',').map(answer => normalizeText(answer));
+        const resultDiv = document.getElementById('quiz-result');
+
+        // Verificar si al menos una respuesta coincide
+        const isCorrect = userAnswers.some(userAnswer => 
+            correctAnswers.includes(userAnswer)
+        );
+
+        if (isCorrect) {
+            resultDiv.textContent = '¡Correcto!';
+            resultDiv.className = 'result correct';
+            quizScore++;
+        } else {
+            resultDiv.textContent = `Incorrecto. Las respuestas correctas son: ${vocabulary[quizIndex].spanish}`;
+            resultDiv.className = 'result incorrect';
+        }
+        document.getElementById('next-quiz-btn').classList.remove('hidden');
+        quizIndex++;
+    }
+
+    window.onload = updateCard;
+</script>
+</body>
+</html>
+
